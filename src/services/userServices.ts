@@ -1,22 +1,39 @@
-import { userSchema } from "../schemas/userSchema"
+import * as usersRepository from '../repositories/usersRepository';
+import  { passwordEncrypter } from '../utils/passwordEncrypter'
 
-function checkUserDataFormat(email: string, password: string){
-    const check = userSchema.validate({email, password})
+async function checkEmailAtSignUp(email: string){
     
-    if(check.error) throw {
-        type: "invalid_email_or_password", 
-        message: "Email must be valid. Password must have at least 10(ten) digits."
+    const register = await usersRepository.getUserByEmail(email);
+    
+    if(register) throw {
+        type: "invalid_email", 
+        message: "email already registered."
     }
 
     return;
+
 }
 
-function checkEmailAtDataBase(email: string){
-    //use a repository to check if email is already in use
+async function checkEmailAtLogin(email: string){
+    
+    const register = await usersRepository.getUserByEmail(email);
+    
+    if(!register) throw {
+        type: "invalid_email", 
+        message: "email not registered."
+    }
+
+    return;
+
 }
 
+async function createUser(email: string, password: string) {
+    const secretPassword = passwordEncrypter(password)
+    await usersRepository.postUser(email, secretPassword)
+}
 
 export {
-    checkUserDataFormat,
-    checkEmailAtDataBase
+    checkEmailAtSignUp,
+    checkEmailAtLogin,
+    createUser
 }
