@@ -1,5 +1,4 @@
 import { prisma } from '../databases/postgres';
-import { IUserData } from '../types/userTypes'
 
 async function getUserByEmail(email: string){
     return await prisma.users.findUnique({where: {email}}) 
