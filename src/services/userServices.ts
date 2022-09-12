@@ -2,7 +2,7 @@ import * as usersRepository from '../repositories/usersRepository';
 import { passwordEncrypter } from '../utils/passwordEncrypter';
 import { passwordComparer } from '../utils/passwordComparer';
 
-//signup
+
 async function checkEmailAtSignUp(email: string){
     
     const register = await usersRepository.getUserByEmail(email);
@@ -21,7 +21,7 @@ async function createUser(email: string, password: string) {
     await usersRepository.postUser(email, secretPassword)
 }
 
-//login
+
 async function checkEmailAtLogin(email: string){
     
     const register = await usersRepository.getUserByEmail(email);
