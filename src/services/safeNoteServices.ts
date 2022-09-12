@@ -17,7 +17,42 @@ async function createSafeNote(newNote: INewNoteData) {
     return await safeNotesRepository.postSafeNote(newNote);
 }
 
+async function findAllSafeNotes(userId: number) {
+    return await safeNotesRepository.getAllSafeNotesByUserId(userId);
+}
+
+async function findOneSafeNote(id: number, userId: number) {
+    
+    const register = await safeNotesRepository.getSafeNoteById(id, userId);
+
+    if(!register) throw {
+        type: 'invalid_safeNote_id',
+        message: 'the safe note id you are looking for does not belong to you or does not exists.'
+    }
+
+    return register;
+
+}
+
+async function removeSafeNote(id: number, userId: number) {
+    
+    const register = await safeNotesRepository.getSafeNoteById(id, userId);
+
+    if(!register) throw {
+        type: 'invalid_safeNote_id',
+        message: 'the safe note id you are looking for does not belong to you or does not exists.'
+    }
+
+    await safeNotesRepository.deleteSafeNoteById(id);
+
+    return;
+
+}
+
 export {
     checkTitleAtDataBase,
     createSafeNote,
+    findAllSafeNotes,
+    findOneSafeNote,
+    removeSafeNote
 }
