@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { ICardData, INewCardData } from '../types/cardTypes';
-import * as cardServices from '../services/cardServices';
+import { IWifiData, INewWifiData } from '../types/wifiTypes';
+import * as wifiServices from '../services/wifiServices';
 import * as tokenServices from '../services/tokenServices';
 
-async function postCard(req: Request, res: Response){
+async function postWifi(req: Request, res: Response){
 
-    const {title, number, name, cvc, expireIn, password, isVirtual, type}: ICardData = req.body;
+    const {title, name, password}: IWifiData = req.body;
     
     const token: string | any = req.headers.authorization?.replace(/Bearer |'/g, '')
     
@@ -13,28 +13,22 @@ async function postCard(req: Request, res: Response){
 
     const userId: number | any = await tokenServices.findUserId(email)
     
-    await cardServices.checkTitleAtDataBase(title, userId)
+    await wifiServices.checkTitleAtDataBase(title, userId)
     
-    const secretPassword: string = cardServices.hideCardPassword(password);
-    const secretCvc: string = cardServices.hideCardCvc(cvc);
-    const newCard: INewCardData = {
+    const secretPassword: string = wifiServices.hideWifiPassword(password);
+    const newWifi: INewWifiData = {
         userId, 
         title, 
-        number, 
         name, 
-        cvc: secretCvc,
-        expireIn, 
-        password: secretPassword, 
-        isVirtual, 
-        type
+        password: secretPassword
     };
     
-    await cardServices.createCard(newCard);
+    await wifiServices.createWifi(newWifi);
  
     return res.sendStatus(201);
 }
 
-async function getCards(req: Request, res: Response) {
+async function getWifies(req: Request, res: Response) {
 
     const token: string | any = req.headers.authorization?.replace(/Bearer |'/g, '')
     
@@ -42,12 +36,12 @@ async function getCards(req: Request, res: Response) {
 
     const userId: number | any = await tokenServices.findUserId(email)
 
-    const cards = await cardServices.findAllCards(userId)
+    const wifies = await wifiServices.findAllWifies(userId)
 
-    return res.status(200).send(cards);
+    return res.status(200).send(wifies);
 }
 
-async function getCardById(req: Request, res: Response) {
+async function getWifiById(req: Request, res: Response) {
 
     const id: number = +req.params.id;
 
@@ -57,12 +51,12 @@ async function getCardById(req: Request, res: Response) {
 
     const userId: number | any = await tokenServices.findUserId(email)
 
-    const card = await cardServices.findOneCard(id, userId)
+    const wifi = await wifiServices.findOneWifi(id, userId)
     
-    return res.status(200).send(card);
+    return res.status(200).send(wifi);
 }
 
-async function deleteCardById(req: Request, res: Response) {
+async function deleteWifiById(req: Request, res: Response) {
 
     const id: number = +req.params.id;
 
@@ -72,14 +66,14 @@ async function deleteCardById(req: Request, res: Response) {
 
     const userId: number | any = await tokenServices.findUserId(email)
 
-    await cardServices.removeCard(id, userId);
+    await wifiServices.removeWifi(id, userId);
     
     return res.sendStatus(202);
 }
 
 export {
-    postCard,
-    getCards,
-    getCardById,
-    deleteCardById
+    postWifi,
+    getWifies,
+    getWifiById,
+    deleteWifiById
 }

@@ -13,6 +13,6 @@ const { postCard,
 cardsRouter.post('/new-card', dataValidator(cardSchema), postCard);
 cardsRouter.get('/cards', getCards)
 cardsRouter.get('/card/:id', getCardById)
-cardsRouter.delete('/delete/:id', deleteCardById)
+cardsRouter.delete('/card/:id', deleteCardById)
 
 export default cardsRouter;

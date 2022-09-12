@@ -47,14 +47,14 @@ async function createCard(newcard: INewCardData) {
 async function findAllCards(userId: number) {
     const registers = await cardsRepository.getAllCardsByUserId(userId);
     
-    return;
-    // registers.map(element => {
-    //     const {id, userId, title, url, urlUser, urlPassword} = element;
+    return registers.map(element => {
+        const {id, userId, title, number, name, cvc, expireIn, password, isVirtual, type} = element;
 
-    //     const truePassword = showCardPassword(urlPassword);
+        const truePassword = showCardPassword(password);
+        const trueCvc = showCardCvc(cvc);
         
-    //     return {id, userId, title, url, urlUser, urlPassword: truePassword};
-    // })
+        return {id, userId, title, number, name, cvc: trueCvc, expireIn, password: truePassword, isVirtual, type};
+    })
 }
 
 async function findOneCard(id: number, userId: number) {
@@ -65,12 +65,13 @@ async function findOneCard(id: number, userId: number) {
         type: 'invalid_card_id',
         message: 'the card id you are looking for does not belong to you or does not exists.'
     }
-
-    // const {title, url, urlUser, urlPassword} = register;
     
-    // const truePassword = showCardPassword(urlPassword);
+    const {title, number, name, cvc, expireIn, password, isVirtual, type} = register;
 
-    // return {id, userId, title, url, urlUser, urlPassword: truePassword};
+    const truePassword = showCardPassword(password);
+    const trueCvc = showCardCvc(cvc);
+    
+    return {id, userId, title, number, name, cvc: trueCvc, expireIn, password: truePassword, isVirtual, type};
 
 }
 
