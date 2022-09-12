@@ -16,6 +16,7 @@ model Users {
   password    String
   credentials Credentials[]
   safeNotes   SafeNotes[]
+  cards       Cards[]
 }
 
 model Credentials {
@@ -34,5 +35,19 @@ model SafeNotes {
   userId    Int
   title     String
   text      String
+}
+
+model Cards {
+    id        Int @id @default(autoincrement())
+    user      Users @relation(fields: [userId], references: [id])
+    userId    Int
+    title     String
+    number    Int
+    name      String
+    cvc       String
+    expireIn  String
+    password  String
+    isVirtual Boolean
+    type      String
 }
 
