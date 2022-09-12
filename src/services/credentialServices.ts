@@ -73,6 +73,21 @@ async function findOneCredential(id: number, userId: number) {
 
 }
 
+async function removeCredential(id: number, userId: number) {
+    
+    const register = await credentialsRepository.getCredentialById(id, userId);
+
+    if(!register) throw {
+        type: 'invalid_credential_id',
+        message: 'the credential id you are looking for does not belong to you or does not exists.'
+    }
+
+    await credentialsRepository.deleteCredentialById(id);
+
+    return;
+
+}
+
 export {
     hideCredentialPassword,
     checkTitleAtDataBase,
@@ -80,4 +95,5 @@ export {
     createCredential,
     findAllCredentials,
     findOneCredential,
+    removeCredential
 }

@@ -21,10 +21,15 @@ async function getCredentialById(id: number, userId: number) {
     return await prisma.credentials.findFirst({where: {id, userId}})
 }
 
+async function deleteCredentialById(id: number) {
+    return await prisma.credentials.delete({where: {id}})
+}
+
 export {
     getTitleByUserId,
     getUrlUserByUserIdAndUrl,
     postCredential,
     getAllCredentialsByUserId,
-    getCredentialById
+    getCredentialById,
+    deleteCredentialById
 }

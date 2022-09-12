@@ -62,8 +62,24 @@ async function getCredentialById(req: Request, res: Response) {
     return res.status(200).send(credential);
 }
 
+async function deleteCredentialById(req: Request, res: Response) {
+
+    const id: number = +req.params.id;
+
+    const token: string | any = req.headers.authorization?.replace(/Bearer |'/g, '')
+    
+    const email: string | any = await tokenServices.decodeToken(token)
+
+    const userId: number | any = await tokenServices.findUserId(email)
+
+    await credentialServices.removeCredential(id, userId);
+    
+    return res.sendStatus(202);
+}
+
 export {
     postCredential,
     getCredentials,
-    getCredentialById
+    getCredentialById,
+    deleteCredentialById
 }
