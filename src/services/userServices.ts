@@ -1,9 +1,6 @@
 import * as usersRepository from '../repositories/usersRepository';
 import { passwordEncrypter } from '../utils/passwordEncrypter';
 import { passwordComparer } from '../utils/passwordComparer';
-import jsonwebtoken from 'jsonwebtoken';
-import dotenv from 'dotenv';
-dotenv.config()
 
 //signup
 async function checkEmailAtSignUp(email: string){
@@ -52,15 +49,9 @@ async function checkPasswordAtLogin(email: string, password: string){
     return;
 }
 
-async function createToken(email: string) {
-    const SECRET_KEY: string | any = process.env.JWT_SECRET;
-    return jsonwebtoken.sign(email, SECRET_KEY)
-}
-
 export {
     checkEmailAtSignUp,
     checkEmailAtLogin,
     checkPasswordAtLogin,
-    createUser,
-    createToken
+    createUser
 }
