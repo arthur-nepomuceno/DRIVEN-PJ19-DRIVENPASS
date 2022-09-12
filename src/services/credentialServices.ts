@@ -4,9 +4,16 @@ import Cryptr from 'cryptr';
 import dotenv from 'dotenv';
 dotenv.config()
 
-async function findUserId(email: string | any){
-    const register = await credentialsRepository.getUserByEmail(email);
-    return register?.id;
+function hideCredentialPassword(password: string){
+    const SECRET_KEY: string | any = process.env.CRYPTR_SECRET
+    const cryptr = new Cryptr(SECRET_KEY);
+    return cryptr.encrypt(password);
+}
+
+function showCredentialPassword(password: string){
+    const SECRET_KEY: string | any = process.env.CRYPTR_SECRET
+    const cryptr = new Cryptr(SECRET_KEY);
+    return cryptr.decrypt(password);
 }
 
 async function checkTitleAtDataBase(title: string, userId: number | any){
@@ -33,25 +40,44 @@ async function checkUrlUserAtDataBase(url: string, urlUser: string, userId: numb
     return;
 }
 
-function hideCredentialPassword(password: string){
-    const SECRET_KEY: string | any = process.env.CRYPTR_SECRET
-    const cryptr = new Cryptr(SECRET_KEY);
-    return cryptr.encrypt(password);
-}
-
 async function createCredential(newCredential: INewCredentialData) {
     return await credentialsRepository.postCredential(newCredential);
 }
 
 async function findAllCredentials(userId: number) {
-    return;
+    const registers = await credentialsRepository.getAllCredentialsByUserId(userId);
+    
+    return registers.map(element => {
+        const {id, userId, title, url, urlUser, urlPassword} = element;
+
+        const truePassword = showCredentialPassword(urlPassword);
+        
+        return {id, userId, title, url, urlUser, urlPassword: truePassword};
+    })
+}
+
+async function findOneCredential(id: number, userId: number) {
+    
+    const register = await credentialsRepository.getCredentialById(id, userId);
+
+    if(!register) throw {
+        type: 'invalid_credential_id',
+        message: 'the credential id you are looking for does not belong to you or does not exists.'
+    }
+
+    const {title, url, urlUser, urlPassword} = register;
+    
+    const truePassword = showCredentialPassword(urlPassword);
+
+    return {id, userId, title, url, urlUser, urlPassword: truePassword};
+
 }
 
 export {
-    findUserId,
+    hideCredentialPassword,
     checkTitleAtDataBase,
     checkUrlUserAtDataBase,
-    hideCredentialPassword,
     createCredential,
-    findAllCredentials
+    findAllCredentials,
+    findOneCredential,
 }

@@ -1,3 +1,4 @@
+import { prisma } from '../databases/postgres';
 import jsonwebtoken from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config()
@@ -9,10 +10,17 @@ async function createToken(email: string) {
 
 async function decodeToken(token: string){
     const SECRET_KEY: string | any = process.env.JWT_SECRET;
-    return jsonwebtoken.verify(token, SECRET_KEY);
+    const decode = jsonwebtoken.verify(token, SECRET_KEY);
+    return decode; 
+}
+
+async function findUserId(email: string | any){
+    const register = await prisma.users.findUnique({where: {email}})
+    return register?.id;
 }
 
 export {
     createToken,
-    decodeToken
+    decodeToken,
+    findUserId
 }

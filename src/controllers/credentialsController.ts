@@ -20,7 +20,7 @@ async function postCredential(req: Request, res: Response){
     
     const email: string | any = await tokenServices.decodeToken(token)
 
-    const userId: number | any = await credentialServices.findUserId(email)
+    const userId: number | any = await tokenServices.findUserId(email)
     
     await credentialServices.checkTitleAtDataBase(title, userId)
     
@@ -35,10 +35,35 @@ async function postCredential(req: Request, res: Response){
 }
 
 async function getCredentials(req: Request, res: Response) {
-    return;
+
+    const token: string | any = req.headers.authorization?.replace(/Bearer |'/g, '')
+    
+    const email: string | any = await tokenServices.decodeToken(token)
+
+    const userId: number | any = await tokenServices.findUserId(email)
+
+    const credentials = await credentialServices.findAllCredentials(userId)
+
+    return res.status(200).send(credentials);
+}
+
+async function getCredentialById(req: Request, res: Response) {
+
+    const id: number = +req.params.id;
+
+    const token: string | any = req.headers.authorization?.replace(/Bearer |'/g, '')
+    
+    const email: string | any = await tokenServices.decodeToken(token)
+
+    const userId: number | any = await tokenServices.findUserId(email)
+
+    const credential = await credentialServices.findOneCredential(id, userId)
+    
+    return res.status(200).send(credential);
 }
 
 export {
     postCredential,
-    getCredentials
+    getCredentials,
+    getCredentialById
 }
