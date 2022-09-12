@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { ICredentialData, INewCredentialData } from '../types/credentialTypes';
 import * as credentialServices from '../services/credentialServices';
-import * as tokenServices from '../services/tokenServices'
+import * as tokenServices from '../services/tokenServices';
 
 async function postCredential(req: Request, res: Response){
     //get cretendials info from body

@@ -90,6 +90,7 @@ async function removeCredential(id: number, userId: number) {
 
 export {
     hideCredentialPassword,
+    showCredentialPassword,
     checkTitleAtDataBase,
     checkUrlUserAtDataBase,
     createCredential,
